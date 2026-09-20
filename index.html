@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Music Player</title>
+
+    <style>
+        body {
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+            text-align: center;
+            background-color: lightskyblue;
+            padding: 50px;
+        }
+
+        .player {
+            background: white;
+            width: 300px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow:12px 12px 2px 1px rgb(0 0 255 / 0.2);;
+        }
+
+        button {
+            font-size: 20px;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow:  10px 5px 5px black;
+        }
+
+        input {
+            width: 90%;
+        }
+
+        li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        li:hover {
+            background: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="player">
+
+        <h2>🎵 My Music Player</h2>
+
+        <h3 id="title">Song 1</h3>
+        <p id="artist">Artist 1</p>
+
+        <!-- Progress -->
+        <input type="range" id="progress" value="0">
+
+        <br><br>
+
+        <!-- Buttons -->
+        <button onclick="previousSong()">⏮</button>
+
+        <button id="playBtn" onclick="playPause()">▶️</button>
+
+        <button onclick="nextSong()">⏭</button>
+
+        <br><br>
+
+        <!-- Volume -->
+        🔊
+        <input
+            type="range"
+            id="volume"
+            min="0"
+            max="1"
+            step="0.1"
+            value="1"
+        >
+
+        <h3>Playlist</h3>
+
+        <ul>
+            <li onclick="chooseSong(0)">🎵 Song 1</li>
+            <li onclick="chooseSong(1)">🎵 Song 2</li>
+            <li onclick="chooseSong(2)">🎵 Song 3</li>
+        </ul>
+
+    </div>
+
+    <!-- Audio -->
+    <audio id="audio"></audio>
+
+
+    <script>
+
+        // Our songs
+        let songs = [
+            "song1.mp3.mp3",
+            "song2.mp3.mp3",
+            "song3.mp3.mp3"
+        ];
+
+        // Song information
+        let titles = [
+            "My First Song",
+            "Beautiful Music",
+            "Happy Song"
+        ];
+
+        let artists = [
+            "Artist 1",
+            "Artist 2",
+            "Artist 3"
+        ];
+
+        // Current song
+        let currentSong = 0;
+
+        let audio = document.getElementById("audio");
+
+
+        // Load song
+        function loadSong() {
+
+            audio.src = songs[currentSong];
+
+            document.getElementById("title").innerText =
+                titles[currentSong];
+
+            document.getElementById("artist").innerText =
+                artists[currentSong];
+        }
+
+
+        // Play / Pause
+        function playPause() {
+            const playBtn = document.getElementById("playBtn");
+            if (audio.paused) {
+                audio.play();
+                playBtn.innertext = "⏸️"
+            } else {
+                audio.pause();
+                 playBtn.innertext = "▶️"
+            }
+        }
+
+
+        // Next song
+        function nextSong() {
+
+            currentSong++;
+
+            if (currentSong >= songs.length) {
+                currentSong = 0;
+            }
+
+            loadSong();
+            audio.play();
+            document.getElementById("playBtn").innertext ="⏸️";
+        }
+
+
+        // Previous song
+        function previousSong() {
+
+            currentSong--;
+
+            if (currentSong < 0) {
+                currentSong = songs.length - 1;
+            }
+
+            loadSong();
+            audio.play();
+            document.getElementById("playBtn").innertext ="⏸️";
+        }
+
+
+        // Select song from playlist
+        function chooseSong(number) {
+
+            currentSong = number;
+
+            loadSong();
+            audio.play();
+        }
+
+
+        // Progress bar
+        audio.addEventListener("timeupdate", function() {
+
+            let progress =
+                (audio.currentTime / audio.duration) * 100;
+
+            document.getElementById("progress").value =
+                progress;
+        });
+
+
+        // Move to different part of song
+        document.getElementById("progress")
+            .addEventListener("input", function() {
+
+                audio.currentTime =
+                    (this.value / 100) * audio.duration;
+            });
+
+
+        // Volume
+        document.getElementById("volume")
+            .addEventListener("input", function() {
+
+                audio.volume = this.value;
+            });
+
+
+        // Automatically play next song
+        audio.addEventListener("ended", function() {
+
+            nextSong();
+
+        });
+
+
+        // Start with first song
+        loadSong();
+
+    </script>
+
+</body>
+</html>
+
